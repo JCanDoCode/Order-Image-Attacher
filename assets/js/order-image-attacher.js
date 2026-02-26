@@ -5,6 +5,7 @@ class OrderImagesAttachments {
 
     init() {
         this.initImgDropper();
+        this.initDownloadAll();
     }
 
     initImgDropper() {
@@ -15,6 +16,26 @@ class OrderImagesAttachments {
         const input = document.querySelector('#orderImgUpload');
         
         input.addEventListener('change', () => {this.onImgDrop(orderId, input)});
+    }
+
+    initDownloadAll() {
+        const downloadAllBtn = document.querySelector('#oiaDownloadAll');
+
+        if (!downloadAllBtn) return;
+
+        downloadAllBtn.addEventListener('click', this.downloadAll);
+    }
+
+    downloadAll() {
+        const images = document.querySelectorAll('.oia-image-download');
+
+        if (images.length < 1) return;
+
+        images.forEach(img => {
+            setTimeout(() => {
+                img.click();
+            }, 300)
+        })
     }
 
     async onImgDrop(orderId, input) {
@@ -37,10 +58,13 @@ class OrderImagesAttachments {
             })
             .then(res => res.json())
             .then(data => {
+                const a = document.createElement('a');
+                a.classList.add('oia');
                 const img = document.createElement('img');
                 img.classList.add('oia-order-image');
                 img.src = data[data.length - 1];
-                imgContainer.appendChild(img);
+                a.appendChild(img)
+                imgContainer.appendChild(a);
                 console.log(data);
             });
         } catch (error) {
