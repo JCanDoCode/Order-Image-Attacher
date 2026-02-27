@@ -2,7 +2,7 @@
 /** 
  * Plugin Name: Order Image Attacher
  * Description: Makes a widget on the order edit page where you can add images that can be downloaded anytime.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Josel Canlas
  * Author URI: https://joselcanlas.com/
  * Developer: Josel Canlas
@@ -28,12 +28,12 @@ class Order_Image_Attachments {
 
         if ( ! $screen || $screen->post_type !== 'shop_order' ) return;
 
-        wp_enqueue_script('order-image-attachments-js', plugin_dir_url(__FILE__).'assets/js/order-image-attacher.js');
-        wp_localize_script('order-image-attachments-js', 'orderImagesAttachmentsVars', array(
+        wp_enqueue_script('order-image-attacher-js', plugin_dir_url(__FILE__).'assets/js/order-image-attacher.js');
+        wp_localize_script('order-image-attacher-js', 'orderImagesAttachmentsVars', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('order_image_attachments_nonce')
         ));
-        wp_enqueue_style('order-image-attachments-css', plugin_dir_url(__FILE__).'assets/css/order-image-attacher.css');
+        wp_enqueue_style('order-image-attacher-css', plugin_dir_url(__FILE__).'assets/css/order-image-attacher.css');
     }
 
     public function add_order_images_meta_box($post_type, $post) {
@@ -55,6 +55,7 @@ class Order_Image_Attachments {
 
     public function render_meta_box($post, $meta_box) {
         $order = $meta_box['args']['order'] ?? null;
+
         if (!$order) return;
 
         $files = explode(', ', (string) $order->get_meta('_oia_images'));
@@ -95,7 +96,7 @@ class Order_Image_Attachments {
         $upload_dir = wp_upload_dir();
 
         $order_dir = trailingslashit( $upload_dir['basedir'] ) .
-            'order-images-attachments/' . $order_id;
+            'order-image-attacher/' . $order_id;
 
         if ( ! file_exists( $order_dir ) ) {
             wp_mkdir_p( $order_dir );
@@ -133,7 +134,7 @@ class Order_Image_Attachments {
 
             $uploaded[] = trailingslashit(
                 $upload_dir['baseurl']
-            ) . 'order-images-attachments/' . $order_id . '/' . $filename;
+            ) . 'order-image-attacher/' . $order_id . '/' . $filename;
         }
         $existing = (string) $order->get_meta('_oia_images');
 
