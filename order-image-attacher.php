@@ -2,7 +2,7 @@
 /** 
  * Plugin Name: Order Image Attacher
  * Description: Makes a widget on the order edit page where you can add images that can be downloaded anytime.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Josel Canlas
  * Author URI: https://joselcanlas.com/
  * Developer: Josel Canlas
@@ -65,7 +65,9 @@ class Order_Image_Attachments {
         <div class="oia-order-imgs" id="OIAOrderImages">
             <input name="upload_order_images" id="orderImgUpload" type="file" multiple>
             <button type="button" id="oiaDownloadAll" class="oia-download-all">Download all images</button>
-            <?php foreach ($files as $file) { ?>
+            <?php foreach ($files as $file) { 
+                if (!$file) continue;
+                ?>
                 <a class="oia-image-download" href="<?php echo esc_attr($file) ?>" download>
                     <img class="oia-order-image" src="<?php echo esc_attr($file) ?>">
                 </a>

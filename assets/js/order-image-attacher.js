@@ -6,6 +6,7 @@ class OrderImagesAttachments {
     init() {
         this.initImgDropper();
         this.initDownloadAll();
+        this.addNotice();
     }
 
     initImgDropper() {
@@ -24,6 +25,19 @@ class OrderImagesAttachments {
         if (!downloadAllBtn) return;
 
         downloadAllBtn.addEventListener('click', this.downloadAll);
+    }
+
+    addNotice() {
+        const oiaImgs = document.querySelectorAll('.oia-order-image');
+
+        if (!oiaImgs.length) return;
+
+        const orderNotes = document.querySelector('#woocommerce-order-notes');
+        const orderNotesInside = document.querySelector('#woocommerce-order-notes .inside');
+        const oiaNotice = document.createElement('p');
+        oiaNotice.classList.add('oia-notice');
+        oiaNotice.textContent = `${oiaImgs.length} Image(s) Attached`;
+        orderNotes.insertBefore(oiaNotice, orderNotesInside);
     }
 
     downloadAll() {
