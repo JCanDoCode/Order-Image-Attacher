@@ -7,7 +7,7 @@
  * Author URI: https://joselcanlas.com/
  * Developer: Josel Canlas
  * Developer URI: https://joselcanlas.com/
- * Text Domain: Product Configurator
+ * Text Domain: order-image-attacher
  * 
  * WC requires at least: 9.8.5
 */
@@ -28,12 +28,12 @@ class Order_Image_Attachments {
 
         if ( ! $screen || $screen->post_type !== 'shop_order' ) return;
 
-        wp_enqueue_script('order-image-attacher-js', plugin_dir_url(__FILE__).'assets/js/order-image-attacher.js');
+        wp_enqueue_script('order-image-attacher-js', plugin_dir_url(__FILE__).'assets/js/order-image-attacher.js', [], '1.0.0');
         wp_localize_script('order-image-attacher-js', 'orderImagesAttachmentsVars', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('order_image_attachments_nonce')
         ));
-        wp_enqueue_style('order-image-attacher-css', plugin_dir_url(__FILE__).'assets/css/order-image-attacher.css');
+        wp_enqueue_style('order-image-attacher-css', plugin_dir_url(__FILE__).'assets/css/order-image-attacher.css', [], '1.0.0');
     }
 
     public function add_order_images_meta_box($post_type, $post) {
