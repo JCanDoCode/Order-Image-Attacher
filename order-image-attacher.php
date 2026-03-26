@@ -2,7 +2,7 @@
 /** 
  * Plugin Name: Order Image Attacher
  * Description: Makes a widget on the order edit page where you can add images that can be downloaded anytime.
- * Version: 1.1.2
+ * Version: 1.2.0
  * Author: Josel Canlas
  * Author URI: https://joselcanlas.com/
  * Developer: Josel Canlas
@@ -16,17 +16,16 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class Order_Image_Attachments {
     public function __construct() {
         add_action('add_meta_boxes', array($this, 'add_order_images_meta_box'), 10, 2);
+        add_action('add_meta_boxes_woocommerce_page_wc-orders', array($this, 'add_order_images_meta_box_hpos'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_ajax_add_order_meta', array($this, 'save_images'));
     }
 
     public function enqueue_admin_scripts($hook) {
-        if ($hook !== 'post.php' && $hook !== 'post-new.php') return;
-
         // Ensure we're editing an order
-        $screen = get_current_screen();
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
 
-        if ( ! $screen || $screen->post_type !== 'shop_order' ) return;
+        if ((($hook !== 'post.php' && $hook !== 'post-new.php') && $screen->id !== 'woocommerce_page_wc-orders') || !$screen || $screen->post_type !== 'shop_order' || !isset($_GET['action']) && $_GET['action'] !== 'edit') return;
 
         wp_enqueue_script('order-image-attacher-js', plugin_dir_url(__FILE__).'assets/js/order-image-attacher.js', [], '1.0.0');
         wp_localize_script('order-image-attacher-js', 'orderImagesAttachmentsVars', array(
@@ -47,6 +46,23 @@ class Order_Image_Attachments {
             'Order Images',
             array($this, 'render_meta_box'),
             'shop_order',
+            'normal',
+            'core',
+            ['order' => $order,]
+        );
+    }
+    public function add_order_images_meta_box_hpos() {
+        $order_id = isset($_GET['id']) ? sanitize_text_field($_GET['id']) : 0;
+        
+        $order = wc_get_order($order_id);
+
+        if (!$order) return;
+
+        add_meta_box(
+            'order_images_meta_box',
+            'Order Images',
+            array($this, 'render_meta_box'),
+            'woocommerce_page_wc-orders',
             'normal',
             'core',
             ['order' => $order,]

@@ -4,6 +4,7 @@ class OrderImagesAttachments {
     }
 
     init() {
+        console.log('OIA init')
         this.initImgDropper();
         this.initDownloadAll();
         this.addNotice();
